@@ -1,6 +1,8 @@
 const { ApolloServer, gql } = require("apollo-server");
 const book = require("./generated/book");
 const author = require("./generated/author");
+const review = require("./generated/review");
+const heading = require("./generated/heading");
 
 const books = {
   "1": {
@@ -39,15 +41,34 @@ const resolvers = {
       const _book = books[id];
 
       // We shape each section using the generated functions
-      const Author = author({ name: _book.author });
       const Book = book({
         title: _book.title,
         description: _book.description
       });
+      const Author = author({ name: _book.author });
+      const Heading = heading({ text: "Reviews" });
+      const Reviews = [
+        Heading,
+        review({
+          text:
+            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere itaque saepe ab esse, sunt quisquam accusantium similique tenetur possimus, excepturi magni quis quaerat voluptatum temporibus ea, eaque earum incidunt vel.",
+          author: "Alice"
+        }),
+        review({
+          text:
+            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam officia voluptates maiores ipsum rerum culpa repellat magni dolore adipisci nihil eum ea sunt possimus veritatis debitis, beatae, repellendus consectetur aliquid!",
+          author: "John"
+        }),
+        review({
+          text:
+            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus dicta ea illum consequatur reiciendis ullam itaque enim, facere possimus nulla nostrum cupiditate dolore amet necessitatibus officiis nihil ipsum sunt quod.",
+          author: "Peter"
+        })
+      ];
 
       // Invert order to change the UI and refresh the client
       // return [Author, Book];
-      return [Book, Author];
+      return [Book, Author, ...Reviews];
     }
   }
 };
