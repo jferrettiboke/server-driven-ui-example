@@ -1,13 +1,7 @@
-import Book from "./Book";
-import Author from "./Author";
-
-const components = {
-  Book,
-  Author
-};
+import dynamic from "next/dynamic";
 
 export const renderComponent = ({ name, props }) => {
-  const Component = components[name];
+  const Component = dynamic(import(`./generated/${name}`));
   const componentProps = {};
 
   props.map(({ name, value }) => {

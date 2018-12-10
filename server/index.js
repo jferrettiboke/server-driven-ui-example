@@ -1,4 +1,6 @@
 const { ApolloServer, gql } = require("apollo-server");
+const book = require("./generated/book");
+const author = require("./generated/author");
 
 const books = {
   "1": {
@@ -27,38 +29,21 @@ const typeDefs = gql`
   }
 
   type Query {
-    bookById(id: ID!): [Component!]!
+    book(id: ID!): [Component!]!
   }
 `;
 
 const resolvers = {
   Query: {
-    bookById: (root, { id }) => {
-      const book = books[id];
+    book(root, { id }) {
+      const _book = books[id];
 
-      const Book = {
-        name: "Book",
-        props: [
-          {
-            name: "title",
-            value: book.title
-          },
-          {
-            name: "description",
-            value: book.description
-          }
-        ]
-      };
-
-      const Author = {
-        name: "Author",
-        props: [
-          {
-            name: "name",
-            value: book.author
-          }
-        ]
-      };
+      // We shape each section using the generated functions
+      const Author = author({ name: _book.author });
+      const Book = book({
+        title: _book.title,
+        description: _book.description
+      });
 
       // Invert order to change the UI and refresh the client
       // return [Author, Book];
